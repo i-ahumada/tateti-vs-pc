@@ -6,27 +6,28 @@ const bot = () => {
     const celdas = document.getElementsByClassName('celda');
 
 
-
     const callback = (mutationList, observer) => {
         for (const mutation of mutationList) {
             if (mutation.type === 'childList' && !compuBlock) {
-                console.log('b');
                 const lastMovePosition = Number(mutation.target.getAttribute('id'));
                 matrizJuego[Math.floor(lastMovePosition / 3)][lastMovePosition % 3] = 'x';
 
                 let compMove = Math.floor(Math.random() * 9);
-                while (!compuBlock) {
+                let tryCounter = 0;
+                while (!compuBlock && (tryCounter <= 7)) {
                     if (matrizJuego[Math.floor(compMove / 3)][compMove % 3] === '') {
                         matrizJuego[Math.floor(compMove / 3)][compMove % 3] = 'o'
                         celdas[compMove].click()
                         compuBlock = true;
+                        tryCounter = 0;
                     } else {
+                        tryCounter++;
                         compMove = compMove <= 7 ? compMove + 1 : 0;
                     }
-                    console.log(matrizJuego[Math.floor(compMove / 3)][compMove % 3])
+                    console.log(tryCounter)
                 }
             } else {
-                setTimeout(() => { compuBlock = false }, 300);
+                setTimeout(() => { compuBlock = false }, 100);
             }
         }
     }
@@ -66,7 +67,6 @@ function reiniciar() {
     matrizJuego = [['', '', ''], ['', '', ''], ['', '', '']];
 
     for (const celda of celdas) {
-        console.log('a')
         compuBlock = true;
         cruz = true;
         celda.innerHTML = '';

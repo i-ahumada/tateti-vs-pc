@@ -1,17 +1,32 @@
 // COMPUTADORA
+let compuBlock = false;
+let matrizJuego = [['', '', ''], ['', '', ''], ['', '', '']];
 
 const bot = () => {
     const celdas = document.getElementsByClassName('celda');
-    let matrizJuego = [['', '', ''], ['', '', ''], ['', '', '']];
 
 
 
     const callback = (mutationList, observer) => {
         for (const mutation of mutationList) {
-            if (mutation.type === 'childList') {
+            if (mutation.type === 'childList' && !compuBlock) {
+                console.log('b');
                 const lastMovePosition = Number(mutation.target.getAttribute('id'));
                 matrizJuego[Math.floor(lastMovePosition / 3)][lastMovePosition % 3] = 'x';
-                console.log(lastMovePosition);
+
+                let compMove = Math.floor(Math.random() * 9);
+                while (!compuBlock) {
+                    if (matrizJuego[Math.floor(compMove / 3)][compMove % 3] === '') {
+                        matrizJuego[Math.floor(compMove / 3)][compMove % 3] = 'o'
+                        celdas[compMove].click()
+                        compuBlock = true;
+                    } else {
+                        compMove = compMove <= 7 ? compMove + 1 : 0;
+                    }
+                    console.log(matrizJuego[Math.floor(compMove / 3)][compMove % 3])
+                }
+            } else {
+                setTimeout(() => { compuBlock = false }, 300);
             }
         }
     }
@@ -27,9 +42,9 @@ const bot = () => {
 
 
 // MECANICAS DEL JUEGO
+let cruz = true;
 
 const Tateti = () => {
-    let cruz = true;
     const celdas = document.getElementsByClassName('celda');
 
     function agregarClickEvent(domElement) {
@@ -48,7 +63,12 @@ const Tateti = () => {
 
 function reiniciar() {
     const celdas = document.getElementsByClassName('celda');
+    matrizJuego = [['', '', ''], ['', '', ''], ['', '', '']];
+
     for (const celda of celdas) {
+        console.log('a')
+        compuBlock = true;
+        cruz = true;
         celda.innerHTML = '';
     };
 }
